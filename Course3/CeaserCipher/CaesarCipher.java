@@ -6,7 +6,7 @@
  * @version (a version number or a date)
  */
 import edu.duke.*;
-public class CeaserCipher {
+public class CaesarCipher {
     public String encrypt(String input, int key){
         StringBuilder encrypted = new StringBuilder(input);
         
@@ -35,8 +35,11 @@ public class CeaserCipher {
     }
     
     public void testCesor(){
-        //System.out.println("encrypted message : " + encrypt("String builder is powerful", 6));
-        System.out.println("decrypted message : Yzxotm haorjkx oy vuckxlar ->" + encrypt("Yzxotm haorjkx oy vuckxlar",20));
+         FileResource fr = new FileResource();
+         String message = fr.asString();
+         int key = 12;
+         String encrypted = encrypt(message, key);
+         System.out.println("Key is " + key + "\n" + encrypted);
     }
     
     public String encryptTwoKeys(String input , int key1 , int key2){
@@ -54,6 +57,12 @@ public class CeaserCipher {
     }
     
     public void testEncryptTwoKeys(){
-        System.out.println(encryptTwoKeys("At noon be in the conference room with your hat on for a surprise party. YELL LOUD!", 8, 21));
+        int key1 = 2;
+        int key2 = 20;
+        //FileResource fr = new FileResource();
+        //String message = fr.asString();
+        String message = "Top ncmy qkff vi vguv vbg ycpx";
+        String encrypted = encryptTwoKeys(message, 26 - key1, 26 - key2);
+        System.out.println("keys are " + key1 + " and " + key2 + "\n" + encrypted);
     }
 }
