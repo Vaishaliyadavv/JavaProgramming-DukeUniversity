@@ -30,26 +30,36 @@ public class TestCaesarCipher {
         return maxDex;
     }
     
-    public void breakCaesarCipher(String input){
+    public String breakCaesarCipher(String input){
         int[] freqs = countLetters(input);
         int maxDex = maxIndex(freqs);
-        int key = maxDex - 4;
+        int dkey = maxDex-4;
         if(maxDex < 4){
-            key = 26 - (4-maxDex);
+            dkey = 26-(4-maxDex);
         }
-        CaesarCipher cc = new CaesarCipher(key);
-        String decrypted = cc.decrypt(input);
-        System.out.println("Key is : " + key + "\n\n" + decrypted);
+        System.out.println("Key is " + dkey);
+        CaesarCipher cc = new CaesarCipher(dkey);
+        return cc.decrypt(input);
     }
     
     public void simpleTests(){
-        FileResource fr = new FileResource();
-        String message = fr.asString();
-        CaesarCipher cc = new CaesarCipher(20);
+        //FileResource fr = new FileResource();
+        //String message = fr.asString();
+        String message = "Can you imagine life WITHOUT the internet AND computers in your pocket?";
+        CaesarCipher cc = new CaesarCipher(15);
         String encrypted = cc.encrypt(message);
-        System.out.println(encrypted);
-        //String decrypted = cc.decrypt(encrypted);
-        //System.out.println(decrypted);
-        breakCaesarCipher(encrypted);
+        String decrypted = cc.decrypt(encrypted); 
+
+        System.out.println("Real Message: " + message);
+        System.out.println("Encrypted Message: " + encrypted);
+        System.out.println("Decrypted Message: " + decrypted);
+
+        decrypted = breakCaesarCipher(encrypted); 
+        System.out.println("Decrypted Message with BREAK: " + decrypted + "\n\n");
+    }
+    
+    public static void main(String[] args) {
+        TestCaesarCipher test = new TestCaesarCipher();
+        test.simpleTests();
     }
 }

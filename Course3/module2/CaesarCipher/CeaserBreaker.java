@@ -70,6 +70,7 @@ public class CeaserBreaker {
         CaesarCipher cc = new CaesarCipher();
         System.out.println(cc.encryptTwoKeys(encrypted, 26 - key1 , 26 - key2));
     }
+    
 
     public void testHalfOfString() {
         System.out.println(halfOfString("Qbkm Zgis", 0)); //Qk gs
@@ -82,7 +83,7 @@ public class CeaserBreaker {
     public void testDecryptTwoKeys() {
         FileResource fr = new FileResource();
         String message = fr.asString();
-        //String message = "Akag tjw Xibhr awoa aoee xakex znxag xwko";
+        //String message = "Aal uttx hm aal Qtct Fhljha pl Wbdl. Pvxvxlx!";
         decryptTwoKeys(message);
     }
 }
