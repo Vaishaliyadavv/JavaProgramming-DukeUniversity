@@ -77,10 +77,35 @@ public class WordsInFiles {
 
         ArrayList<String> maxWords = wordsInNumFiles(maxFiles);
         System.out.println("Words that appear in the maximum number of files (" + maxFiles + "): " + maxWords);
-
+        System.out.println("total words in max files " + maxWords.size());
         for (String word : maxWords) {
             System.out.println("The word '" + word + "' appears in the following files:");
             printFilesIn(word);
+        }
+    }
+    
+    public void tester2() {
+        System.out.println("--------------------------------------------------------------");
+        buildWordFileMap();
+        ArrayList<String> wordsInFourFiles = wordsInNumFiles(4);
+        System.out.println("Number of words that appear in exactly four of the seven files: " + wordsInFourFiles.size());
+        
+        String targetWordSea = "sea";
+        ArrayList<String> fileListForSea = wordFileMap.get(targetWordSea);
+        if (fileListForSea != null) {
+            List<String> allFiles = new ArrayList<>(Arrays.asList("caesar.txt", "confucius.txt", "errors.txt", "hamlet.txt", "likeit.txt", "macbeth.txt", "romeo.txt"));
+            allFiles.removeAll(fileListForSea);
+            System.out.println("The word 'sea' does NOT appear in: " + allFiles);
+        } else {
+            System.out.println("The word 'sea' does not appear in any file.");
+        }
+        
+        String targetWordTree = "tree";
+        ArrayList<String> fileListForTree = wordFileMap.get(targetWordTree);
+        if (fileListForTree != null) {
+            System.out.println("The word 'tree' appears in: " + fileListForTree);
+        } else {
+            System.out.println("The word 'tree' does not appear in any file.");
         }
     }
 }

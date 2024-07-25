@@ -67,4 +67,24 @@ public class CodonCount {
             System.out.println();
         }
     }
+    
+    public void tester2(){
+        FileResource fr = new FileResource();
+        String dna = fr.asString().toUpperCase().trim();
+        
+        int frame = 0;
+        buildCodonMap(frame, dna);
+        System.out.println("Reading frame starting with " + frame + " results in " + codonMap.size() + " unique codons");
+        
+        String mostCommonCodon = getMostCommonCodon();
+        System.out.println("and most common codon is " + mostCommonCodon + " with count " + codonMap.get(mostCommonCodon));
+        
+        System.out.println("Counts of codons that occur exactly 7 times:");
+        for (String codon : codonMap.keySet()) {
+            int count = codonMap.get(codon);
+            if (count == 7) {
+                System.out.println(codon + "\t" + count);
+            }
+        }
+    }
 }
