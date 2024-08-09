@@ -46,9 +46,10 @@ public class VigenereBreaker {
         int maxRealWords = 0;
         String bestDecryption = "";
         int bestKeyLength = 0;
+        char mostCommonChar = mostCommonCharIn(dictionary);
         int[] bestKey = null;
         for (int i = 1; i <= 100; i++) {
-            int[] key = tryKeyLength(encrypted, i, 'e');
+            int[] key = tryKeyLength(encrypted, i, mostCommonChar);
             VigenereCipher vc = new VigenereCipher(key);
             String dec = vc.decrypt(encrypted);
             int realWords = countWords(dec, dictionary);
@@ -73,13 +74,66 @@ public class VigenereBreaker {
     public void breakVigenere() {
         FileResource fr = new FileResource();
         String encrypted = fr.asString();
-
-        FileResource dictResource = new FileResource("dictionaries/English");
-        HashSet<String> dictionary = readDictionary(dictResource);
-
-        String decryptedMessage = breakForLanguage(encrypted, dictionary);
-        System.out.println(decryptedMessage);
+        
+        HashMap<String, HashSet<String>> languages = new HashMap<>();
+        String[] languageFiles = {"Danish", "Dutch", "English", "French", "German", "Italian", "Portuguese", "Spanish"};
+        
+        for(String language : languageFiles){
+            FileResource dictResource = new FileResource("dictionaries/" + language);
+            HashSet<String> dictionary = readDictionary(dictResource);
+            languages.put(language,dictionary);
+        }
+        breakForAllLangs(encrypted, languages);
     }
+    
+    public char mostCommonCharIn(HashSet<String> dictionary){
+        HashMap<Character,Integer> count = new HashMap();
+        
+        for(String word : dictionary){
+            for(char c : word.toCharArray()){
+                if(Character.isLetter(c)){
+                    c = Character.toLowerCase(c);
+                    count.put(c ,count.getOrDefault(c,0) + 1);
+                }
+            }
+        }
+            
+        char mostCommon = 'e';
+        int maxCount = 0;
+        for(char c : count.keySet()){
+            if(count.get(c) > maxCount){
+                maxCount = count.get(c);
+                mostCommon = c;
+            }
+        }
+        return mostCommon;
+    }
+    
+    public String breakForAllLangs(String encrypted , HashMap<String, HashSet<String>> languages){
+        int maxValidWords = 0;
+        String decryptedMessage = "";
+        String detectedLanguage = "";
+        
+        for(String lang : languages.keySet()){
+            HashSet<String> dictionary = languages.get(lang);
+            String currDecrypted = breakForLanguage(encrypted , dictionary);
+            int validCount = countWords(currDecrypted , dictionary);
+            
+            if(validCount > maxValidWords){
+                maxValidWords = validCount;
+                decryptedMessage = currDecrypted;
+                detectedLanguage = lang;
+            }
+        }
+        System.out.println("Decrypted Message: " + decryptedMessage);
+        System.out.println("Detected Language: " + detectedLanguage);
+        return decryptedMessage;
+    }
+    
+    
+    
+    
+    
 
     public void tester() {
         FileResource fr = new FileResource();
@@ -99,20 +153,20 @@ public class VigenereBreaker {
         FileResource dictResource = new FileResource("dictionaries/English");
         HashSet<String> dictionary = readDictionary(dictResource);
 
-        // Determine best decryption and key length
+        
         String decryptedMessage = breakForLanguage(encrypted, dictionary);
 
-        // Count valid words in decrypted message and print
+        
         int validWords = countWords(decryptedMessage, dictionary);
         System.out.println("Number of valid words: " + validWords);
         System.out.println("-----------------------------------------------------------------------------------------------");
 
-        // Print first line of decrypted message
+        
         String firstLine = decryptedMessage.split("\n")[0];
         System.out.println("First line of text: " + firstLine);
         System.out.println("-----------------------------------------------------------------------------------------------");
 
-        // Use tryKeyLength with key length of 38 and print number of valid words
+        
         int[] keyLength38 = tryKeyLength(encrypted, 38, 'e');
         VigenereCipher vc = new VigenereCipher(keyLength38);
         String decryptedWith38 = vc.decrypt(encrypted);
@@ -123,6 +177,6 @@ public class VigenereBreaker {
 
     public static void main(String[] args) {
         VigenereBreaker vb = new VigenereBreaker();
-        vb.testSecretMessage();  // Directly test the specific file and answer quiz questions
+        vb.testSecretMessage();
     }
 }
