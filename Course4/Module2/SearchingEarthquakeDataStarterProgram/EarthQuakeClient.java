@@ -1,5 +1,5 @@
 import java.util.*;
-import edu.duke.*;
+
 
 public class EarthQuakeClient {
     public EarthQuakeClient() {
@@ -96,5 +96,65 @@ public class EarthQuakeClient {
         for (QuakeEntry qe : list) {
             System.out.println(qe);
         }
+    }
+    
+    public ArrayList<QuakeEntry> filterByDepth(ArrayList<QuakeEntry> quakeData,
+    double minDepth,double maxDepth){
+        ArrayList<QuakeEntry> depthsInRange = new ArrayList<QuakeEntry>();
+        for(QuakeEntry qe  : quakeData){
+            double depth = qe.getDepth();
+            if(depth > minDepth && depth < maxDepth){
+                depthsInRange.add(qe);
+            }
+        }
+        return depthsInRange;
+    }
+    
+    public void quakesOfDepth(){
+        EarthQuakeParser parser = new EarthQuakeParser();
+        String source = "data/nov20quakedatasmall.atom";
+        //String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
+        ArrayList<QuakeEntry> list  = parser.read(source);
+        
+        System.out.println("read data for " + list.size()+ " quakes");
+        ArrayList<QuakeEntry> quakesOfDepth = filterByDepth(list,-10000.0, -5000.0);
+        
+        for (QuakeEntry qe : quakesOfDepth) {
+            System.out.println(qe);
+        }
+        System.out.println("Found " + quakesOfDepth.size() + " quakes with depth between -10000.0 and -5000.0");
+    }
+    
+    public ArrayList<QuakeEntry> filterByPhrase(ArrayList<QuakeEntry> quakeData,
+    String where , String phrase){
+        ArrayList<QuakeEntry> titlesWithPhrase = new ArrayList<QuakeEntry>();
+        phrase = phrase.toLowerCase();
+        for(QuakeEntry qe  : quakeData){
+            String title = qe.getInfo().toLowerCase();
+            if(where.equals("start") && title.startsWith(phrase)){
+                titlesWithPhrase.add(qe);
+            }else if(where.equals("end") && title.endsWith(phrase)){
+                titlesWithPhrase.add(qe);
+            }else if(where.equals("any") && title.contains(phrase)){
+                titlesWithPhrase.add(qe);
+            }
+        }
+        return titlesWithPhrase;
+    }
+    
+    
+    public void quakesByPhrase(){
+        EarthQuakeParser parser = new EarthQuakeParser();
+        String source = "data/nov20quakedatasmall.atom";
+        //String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
+        ArrayList<QuakeEntry> list  = parser.read(source);
+        
+        System.out.println("read data for " + list.size()+ " quakes");
+        ArrayList<QuakeEntry> quakesByPhrase = filterByPhrase(list,"end","california");
+        
+        for (QuakeEntry qe : quakesByPhrase) {
+            System.out.println(qe);
+        }
+        System.out.println("Found " + quakesByPhrase.size() + " quakes within the criteria.");
     }
 }
