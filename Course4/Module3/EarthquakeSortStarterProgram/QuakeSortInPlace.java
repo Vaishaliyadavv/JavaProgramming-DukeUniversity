@@ -38,14 +38,15 @@ public class QuakeSortInPlace {
     public void testSort() {
         EarthQuakeParser parser = new EarthQuakeParser(); 
         //String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
-        String source = "data/earthQuakeDataDec6sample2.atom";
+        String source = "data/earthQuakeDataWeekDec6sample1.atom";
         //String source = "data/nov20quakedata.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);  
        
         System.out.println("read data for "+list.size()+" quakes");    
         //sortByLargestDepth(list);
         sortByMagnitudeWithBubbleSortWithCheck(list);
-        
+        //sortByMagnitude(list);
+        sortByMagnitudeWithCheck(list);
         //System.out.print("EarthQuakes in sorted order : ");
         
         //QuakeEntry lastQuake = list.get(list.size()-1);
@@ -88,6 +89,7 @@ public class QuakeSortInPlace {
         return maxIndex;
     }
     
+    
     public void sortByLargestDepth(ArrayList<QuakeEntry> in){
         int maxPasses = 50;
         for(int i=0 ; i < maxPasses && i < in.size();i++){
@@ -97,6 +99,25 @@ public class QuakeSortInPlace {
             
             in.set(i,maxDepth);
             in.set(maxIdx,depth);
+        }
+    }
+    
+    public void sortByMagnitudeWithCheck(ArrayList<QuakeEntry> quakes) {
+        int passes = 0;  
+        for (int i = 0; i < quakes.size(); i++) {
+            int minIdx = getSmallestMagnitude(quakes, i);
+    
+            QuakeEntry qi = quakes.get(i);
+            QuakeEntry qmin = quakes.get(minIdx);
+            quakes.set(i, qmin);
+            quakes.set(minIdx, qi);
+            
+            passes++;  
+            
+            if (checkInSortedOrder(quakes)) {
+                System.out.println("List is sorted after " + passes + " passes.");
+                break;
+            }
         }
     }
     
@@ -139,16 +160,16 @@ public class QuakeSortInPlace {
         int passes = 0;
         
         for(int i = 0 ; i < in.size() - 1 ; i++){
-            System.out.println("Before Pass : " + i);
+            /*System.out.println("Before Pass : " + i);
             for (QuakeEntry qe : in) {
                 System.out.println(qe);
-            }
+            }*/
             onePassBubbleSort(in, i);
             passes++;
-            System.out.println("After Pass : " + i);
+            /*System.out.println("After Pass : " + i);
             for (QuakeEntry qe : in) {
                 System.out.println(qe);
-            }
+            }*/
                 if (checkInSortedOrder(in)) {
                 System.out.println("List is sorted after " + passes + " passes.");
                 break;
